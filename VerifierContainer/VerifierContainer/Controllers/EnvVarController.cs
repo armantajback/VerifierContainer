@@ -4,8 +4,7 @@ namespace VerifierContainer.Controllers
     using Microsoft.AspNetCore.Mvc;
     using System;
 
-    [Route("[EnvironmentVariable]")]
-    [ApiController]
+    [Route("EnvVar")]
     public class EnvVarController : Controller
     {
         [HttpGet("ResourceName")]

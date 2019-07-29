@@ -5,21 +5,20 @@ namespace VerifierContainer.Controllers
     using System;
     using System.Net.Http;
 
-    [Route("[LocalConnectivity]")]
-    [ApiController]
+    [Route("LocalConnectivity")]
     public class LocalConnectivityController : Controller
     {
         private static readonly HttpClient client = new HttpClient();
         private static readonly string localUri = "http://localhost:{0}";
 
         [HttpGet("31002")]
-        public ActionResult<string> Get31002()
+        public ActionResult<string> Get_31002()
         {
             return GetLocalEndpoint(31002);
         }
 
         [HttpGet("19080")]
-        public ActionResult<string> Get19080()
+        public ActionResult<string> Get_19080()
         {
             return GetLocalEndpoint(19080);
         }

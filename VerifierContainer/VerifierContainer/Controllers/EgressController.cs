@@ -4,9 +4,8 @@ namespace VerifierContainer.Controllers
     using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Net.Http;
-
-    [Route("[Egress]")]
-    [ApiController]
+  
+    [Route("Egress")]
     public class EgressController : Controller
     {
         [HttpGet("GistCheck")]
