@@ -4,12 +4,14 @@ namespace VerifierContainer.Controllers
     using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Net.Http;
+    using Newtonsoft;
+    using Newtonsoft.Json;
 
     [Route("LocalConnectivity")]
     public class LocalConnectivityController : Controller
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string localUri = "http://localhost:{0}";
+        private static readonly string localUri = "http://{0}:{1}";
 
         [HttpGet("31002")]
         public ActionResult<string> Get_31002()
@@ -27,7 +29,8 @@ namespace VerifierContainer.Controllers
         {
             try
             {
-                var Uri = string.Format(localUri, port.ToString());
+                var hostIp = Environment.GetEnvironmentVariable("Fabric_Node");
+                var Uri = string.Format(localUri, hostIp, port.ToString());
                 var response = client.GetAsync(Uri).Result;
                 response.EnsureSuccessStatusCode();
 
