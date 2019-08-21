@@ -6,12 +6,12 @@ namespace VerifierContainer.Controllers
     using System.Net.Http;
     using Newtonsoft;
     using Newtonsoft.Json;
+    using System.Net.Sockets;
 
     [Route("LocalConnectivity")]
     public class LocalConnectivityController : Controller
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string localUri = "http://{0}:{1}";
 
         [HttpGet("31002")]
         public ActionResult<string> Get_31002()
@@ -27,20 +27,34 @@ namespace VerifierContainer.Controllers
 
         private string GetLocalEndpoint(int port)
         {
+            var hostIp = Environment.GetEnvironmentVariable("Fabric_Node");
+
+            Socket s = new Socket(
+                AddressFamily.InterNetwork,
+                SocketType.Stream,
+                ProtocolType.Tcp);
+
             try
             {
-                var hostIp = Environment.GetEnvironmentVariable("Fabric_Node");
-                var Uri = string.Format(localUri, hostIp, port.ToString());
-                var response = client.GetAsync(Uri).Result;
-                response.EnsureSuccessStatusCode();
+                IAsyncResult result = s.BeginConnect(hostIp, port, null, null);
+                result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(10), true);
 
-                var responseContent = response.Content;
-                string responseString = responseContent.ReadAsStringAsync().Result;
-                return responseString;
+                if (s.Connected)
+                {
+                    return "Connected";
+                }
+                else
+                {
+                    return "Failed";
+                }
             }
             catch (Exception e)
             {
-                return e.ToString();
+                return $"Exception while trying to connect. Exception: {e}";
+            }
+            finally
+            {
+                s.Close();
             }
         }
     }
