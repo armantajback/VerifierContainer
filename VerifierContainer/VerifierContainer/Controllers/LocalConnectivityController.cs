@@ -13,21 +13,15 @@ namespace VerifierContainer.Controllers
     {
         private static readonly HttpClient client = new HttpClient();
 
-        [HttpGet("31002")]
-        public ActionResult<string> Get_31002()
+        [HttpGet("{port:int}")]
+        public ActionResult<string> Get(int port)
         {
-            return GetLocalEndpoint(31002);
-        }
-
-        [HttpGet("19080")]
-        public ActionResult<string> Get_19080()
-        {
-            return GetLocalEndpoint(19080);
+            return GetLocalEndpoint(port);
         }
 
         private string GetLocalEndpoint(int port)
         {
-            var hostIp = Environment.GetEnvironmentVariable("Fabric_Node");
+            var hostIp = Environment.GetEnvironmentVariable("Fabric_NodeIPOrFQDN");
 
             Socket s = new Socket(
                 AddressFamily.InterNetwork,
@@ -37,7 +31,7 @@ namespace VerifierContainer.Controllers
             try
             {
                 IAsyncResult result = s.BeginConnect(hostIp, port, null, null);
-                result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(10), true);
+                result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), true);
 
                 if (s.Connected)
                 {

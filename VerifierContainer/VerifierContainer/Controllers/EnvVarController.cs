@@ -7,10 +7,10 @@ namespace VerifierContainer.Controllers
     [Route("EnvVar")]
     public class EnvVarController : Controller
     {
-        [HttpGet("ResourceName")]
-        public ActionResult<string> Get()
+        [HttpGet("{variable}")]
+        public ActionResult<string> Get(string variable)
         {
-            return Environment.GetEnvironmentVariable("ResourceName");
+            return Environment.GetEnvironmentVariable(variable);
         }
     }
 }
