@@ -3,31 +3,33 @@ namespace VerifierContainer.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
     using System;
-    using System.Net.Http;
-  
+    using System.Net.NetworkInformation;
+
     [Route("Egress")]
     public class EgressController : Controller
     {
-        [HttpGet("GistCheck")]
+        [HttpGet("Verify")]
         public ActionResult<string> Get()
         {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    var url = "https://gist.githubusercontent.com/armantajback/04ff56c2717585f2c27da7321e4d1622/raw/d52566e03af78c0d0665d9b00190c88added777c/EgressChecksum.txt";
-                    var response = client.GetAsync(url).Result;
-                    response.EnsureSuccessStatusCode();
 
-                    var responseContent = response.Content;
-                    string responseString = responseContent.ReadAsStringAsync().Result;
-                    return responseString;
+            using (Ping pinger = new Ping())
+                try
+                {
+                    var reply = pinger.Send("8.8.8.8", 5000);
+
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        return "Connected";
+                    }
+                    else
+                    {
+                        return "Failed";
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                return e.ToString();
-            }
+                catch (Exception e)
+                {
+                    return $"Exception while trying to connect. Exception: {e}";
+                }
         }
     }
 }
