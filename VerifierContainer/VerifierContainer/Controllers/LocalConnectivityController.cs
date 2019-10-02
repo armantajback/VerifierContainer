@@ -16,40 +16,8 @@ namespace VerifierContainer.Controllers
         [HttpGet("{port:int}")]
         public ActionResult<string> Get(int port)
         {
-            return GetLocalEndpoint(port);
-        }
-
-        private string GetLocalEndpoint(int port)
-        {
-            var hostIp = Environment.GetEnvironmentVariable("Fabric_NodeIPOrFQDN");
-
-            Socket s = new Socket(
-                AddressFamily.InterNetwork,
-                SocketType.Stream,
-                ProtocolType.Tcp);
-
-            try
-            {
-                IAsyncResult result = s.BeginConnect(hostIp, port, null, null);
-                result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), true);
-
-                if (s.Connected)
-                {
-                    return "Connected";
-                }
-                else
-                {
-                    return "Failed";
-                }
-            }
-            catch (Exception e)
-            {
-                return $"Exception while trying to connect. Exception: {e}";
-            }
-            finally
-            {
-                s.Close();
-            }
+            var hostIp = Environment.GetEnvironmentVariable("Fabric_NodeIPOrFQDN") ?? "localhost";
+            return EndpointChecker.GetEndpoint(hostIp, port, TimeSpan.FromSeconds(1), 10);
         }
     }
 }
