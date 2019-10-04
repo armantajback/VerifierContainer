@@ -5,7 +5,7 @@ namespace VerifierContainer
 {
     public static class EndpointChecker
     {
-        public static string GetEndpoint(string host, int port, TimeSpan timeout, int retries)
+        public static string GetEndpoint(string host, int port, int retries = 0)
         {
             int attempts = 0;
             while (true)
@@ -15,11 +15,9 @@ namespace VerifierContainer
                     SocketType.Stream,
                     ProtocolType.Tcp);
 
-
                 try
                 {
-                    IAsyncResult result = s.BeginConnect(host, port, null, null);
-                    result.AsyncWaitHandle.WaitOne(timeout, true);
+                    s.Connect(host, port);
 
                     if (s.Connected)
                     {
@@ -30,14 +28,14 @@ namespace VerifierContainer
                         attempts++;
                         if (attempts > retries)
                         {
-                            return "Failed";
+                            return $"Failed to connect.";
                         }
                         continue;
                     }
                 }
                 catch (Exception e)
                 {
-                    return $"Exception while trying to connect. Exception: {e}";
+                    return $"Failed to connect. Exception: {e}";
                 }
                 finally
                 {
