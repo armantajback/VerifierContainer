@@ -14,7 +14,7 @@ namespace VerifierContainer
                 .UseKestrel()
                 .ConfigureServices(s => s.AddMvc())
                 .Configure(a => a.UseMvc())
-                .UseUrls("http://+:12345")
+                .UseUrls("http://+:80")
                 .Build();
             builder.Start();
             Thread.Sleep(Timeout.Infinite);
