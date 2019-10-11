@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace VerifierContainer
 {
     public static class EndpointChecker
     {
-        public static string GetEndpoint(string host, int port, TimeSpan timeout = default, int retries = 0)
+        public static async Task<string> GetEndpoint(string host, int port, TimeSpan timeout = default, int retries = 0)
         {
             if(timeout == default)
             {
@@ -23,8 +24,10 @@ namespace VerifierContainer
 
                 try
                 {
-                    IAsyncResult result = s.BeginConnect(host, port, null, null);
-                    bool success = result.AsyncWaitHandle.WaitOne((int)timeout.TotalMilliseconds, true);
+                    var connectTask = Task.Factory.FromAsync(s.BeginConnect(host, port, null, null), s.EndConnect);
+                    var timeoutTask = Task.Delay(timeout);
+
+                    await Task.WhenAny(connectTask, timeoutTask);
 
                     if (s.Connected)
                     {

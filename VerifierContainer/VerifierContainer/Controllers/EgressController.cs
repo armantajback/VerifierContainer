@@ -2,14 +2,15 @@
 namespace VerifierContainer.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using System.Threading.Tasks;
 
     [Route("Egress")]
     public class EgressController : Controller
     {
         [HttpGet("Verify")]
-        public ActionResult<string> Get()
+        public async Task<ActionResult<string>> Get()
         {
-            return EndpointChecker.GetEndpoint("www.bing.com", 80);
+            return await EndpointChecker.GetEndpoint("www.bing.com", 80);
         }
     }
 }
