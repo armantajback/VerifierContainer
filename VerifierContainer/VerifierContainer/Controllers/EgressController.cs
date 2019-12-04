@@ -10,12 +10,12 @@ namespace VerifierContainer.Controllers
     {
 
 
-        [HttpGet("Verify")]
-        public async Task<ActionResult<string>> Get()
+        [HttpGet("Verify/{host?}")]
+        public async Task<ActionResult<string>> Get(string host=null)
         {
-            var randomWebsite = AlexaTop100Websites[RandomGenerator.Next(0, AlexaTop100Websites.Length)];
+            host = host ?? AlexaTop100Websites[RandomGenerator.Next(0, AlexaTop100Websites.Length)];
 
-            return await EndpointChecker.GetEndpoint(randomWebsite, 80);
+            return await EndpointChecker.GetEndpoint(host, 80);
         }
 
         static readonly Random RandomGenerator = new Random();

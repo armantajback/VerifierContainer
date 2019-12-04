@@ -10,6 +10,7 @@ namespace VerifierContainer.Controllers
         [HttpGet("{variable}")]
         public ActionResult<string> Get(string variable)
         {
+            Console.WriteLine($"{DateTime.UtcNow}: received request");
             return Environment.GetEnvironmentVariable(variable);
         }
     }
