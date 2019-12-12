@@ -3,8 +3,6 @@ namespace VerifierContainer
 {
     using Microsoft.AspNetCore.Hosting;
     using System.Threading;
-    using Microsoft.AspNetCore.Server.Kestrel.Core;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.Builder;
 
